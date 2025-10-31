@@ -1,0 +1,39 @@
+name: Daily App Store Downloads Fetch
+
+on:
+  schedule:
+    # 毎日午前6時（日本時間）= 前日21時（UTC）
+    - cron: '0 21 * * *'
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  fetch-downloads:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install pyjwt cryptography requests pandas gspread google-auth
+    
+    - name: Create credentials files
+      run: |
+        echo "${{ secrets.APPSTORE_PRIVATE_KEY }}" > AuthKey.p8
+        echo "${{ secrets.GOOGLE_CREDENTIALS }}" > credentials.json
+    
+    - name: Fetch downloads and update Google Sheets
+      env:
+        KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+        ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+        VENDOR_NUMBER: ${{ secrets.VENDOR_NUMBER }}
+        SHEET_NAME: ${{ secrets.SHEET_NAME }}
+        PRIVATE_KEY_PATH: AuthKey.p8
+        GOOGLE_CREDS_PATH: credentials.json
+      run: python fetch_appstore_downloads.py
