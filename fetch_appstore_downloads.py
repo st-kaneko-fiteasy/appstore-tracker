@@ -238,7 +238,7 @@ def main():
     PRIVATE_KEY_PATH = os.environ.get('PRIVATE_KEY_PATH', 'AuthKey.p8')
     VENDOR_NUMBER = os.environ.get('VENDOR_NUMBER')
     
-    GOOGLE_CREDS_PATH = os.environ.get('GOOGLE_CREDS_PATH', 'credentials.json')
+    GOOGLE_CREDS_PATH = os.environ.get('GOOGLE_CREDS_PATH', 'advance-verve-423204-f9-c39b121405b2.json')
     SHEET_NAME = os.environ.get('SHEET_NAME', 'Daily Downloads')
     
     # デバッグ用（値が設定されているか確認）
