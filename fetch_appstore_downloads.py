@@ -232,15 +232,29 @@ class AppStoreDownloadTracker:
 
 # メイン実行
 def main():
-    # ===== ここに自分の情報を入力 =====
-    KEY_ID = 'A7U8B4L926'                    # App Store Connect API Key ID
-    ISSUER_ID = 'b154cb40-3971-4a03-9d5c-a3a7f495ad43'              # Issuer ID
-    PRIVATE_KEY_PATH = 'AuthKey_A7U8B4L926.p8'     # .p8ファイルのパス
-    VENDOR_NUMBER = '90171119'       # Vendor Number
+    # 環境変数から取得（GitHub Actions用）
+    KEY_ID = os.environ.get('KEY_ID')
+    ISSUER_ID = os.environ.get('ISSUER_ID')
+    PRIVATE_KEY_PATH = os.environ.get('PRIVATE_KEY_PATH', 'AuthKey.p8')
+    VENDOR_NUMBER = os.environ.get('VENDOR_NUMBER')
     
-    GOOGLE_CREDS_PATH = 'advance-verve-423204-f9-c39b121405b2.json'     # Google認証情報のパス
-    SHEET_NAME = 'Daily Downloads'         # Google Sheetsの名前
-    # ===================================
+    GOOGLE_CREDS_PATH = os.environ.get('GOOGLE_CREDS_PATH', 'credentials.json')
+    SHEET_NAME = os.environ.get('SHEET_NAME', 'Daily Downloads')
+    
+    # デバッグ用（値が設定されているか確認）
+    if not KEY_ID:
+        print("エラー: KEY_ID環境変数が設定されていません")
+        return
+    if not ISSUER_ID:
+        print("エラー: ISSUER_ID環境変数が設定されていません")
+        return
+    if not VENDOR_NUMBER:
+        print("エラー: VENDOR_NUMBER環境変数が設定されていません")
+        return
+    
+    print(f"KEY_ID: {KEY_ID[:5]}... (設定済み)")
+    print(f"ISSUER_ID: {ISSUER_ID[:10]}... (設定済み)")
+    print(f"VENDOR_NUMBER: {VENDOR_NUMBER} (設定済み)")
     
     tracker = AppStoreDownloadTracker(
         key_id=KEY_ID,
