@@ -1,0 +1,9 @@
+venv/
+*.p8
+credentials.json
+advance-verve-423204-f9-c39b121405b2.json
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+AuthKey_*.p8
