@@ -1,4 +1,4 @@
-name: Daily App Store Downloads Fetch
+name: Fetch App Store Downloads V2
 
 on:
   schedule:
@@ -12,23 +12,23 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: '3.10'
     
     - name: Install dependencies
       run: |
+        pip install --upgrade pip
         pip install pyjwt cryptography requests pandas gspread google-auth
     
-    - name: Create credentials files
+    - name: Create App Store credentials
       run: |
         echo "${{ secrets.APPSTORE_PRIVATE_KEY }}" > AuthKey.p8
-        echo "${{ secrets.GOOGLE_CREDENTIALS_BASE64 }}" | base64 -d > credentials.json
     
-    - name: Fetch downloads and update Google Sheets
+    - name: Fetch and save downloads
       env:
         KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
         ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}

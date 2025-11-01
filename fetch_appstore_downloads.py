@@ -158,8 +158,16 @@ class AppStoreDownloadTracker:
         if creds_json:
             # 環境変数から認証情報を取得（GitHub Actions用）
             print("環境変数からGoogle認証情報を読み込み中...")
-            creds_dict = json.loads(creds_json)
+            try:
+                creds_dict = json.loads(creds_json)
+                print("✅ JSON解析成功")
+            except json.JSONDecodeError as e:
+                print(f"❌ JSON解析エラー: {e}")
+                print(f"JSONの最初の100文字: {creds_json[:100]}")
+                raise
+            
             creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+            print("✅ Google認証情報の作成成功")
         else:
             # ファイルから認証情報を取得（ローカル実行用）
             print(f"ファイルからGoogle認証情報を読み込み中: {self.google_creds_path}")
@@ -167,6 +175,7 @@ class AppStoreDownloadTracker:
                 self.google_creds_path, scopes=scope)
         
         client = gspread.authorize(creds)
+        print("✅ gspread認証成功")
         
         return client.open(self.sheet_name)
     
@@ -180,7 +189,10 @@ class AppStoreDownloadTracker:
         
         try:
             spreadsheet = self.connect_to_sheets()
+            print(f"✅ スプレッドシート '{self.sheet_name}' を開きました")
+            
             worksheet = spreadsheet.sheet1
+            print("✅ ワークシート取得成功")
             
             # 既存データを取得
             existing_data = worksheet.get_all_values()
@@ -192,7 +204,7 @@ class AppStoreDownloadTracker:
                 'Currency', 'Product Type', 'Promo Code'
             ]
             
-            # ヘッダーがない場合は追加（修正箇所）
+            # ヘッダーがない場合は追加
             if not existing_data or len(existing_data) == 0 or len(existing_data[0]) == 0 or existing_data[0][0] != 'Date':
                 print(f"ヘッダーを追加: {len(expected_header)}列")
                 worksheet.insert_row(expected_header, 1)
