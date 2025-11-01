@@ -1,5 +1,7 @@
 name: Fetch App Store Downloads V2
 
+# Version: 1.1  ← この行を追加
+
 on:
   schedule:
     # 毎日午前6時（日本時間）= 前日21時（UTC）
