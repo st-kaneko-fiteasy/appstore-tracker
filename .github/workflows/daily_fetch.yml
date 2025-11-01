@@ -36,4 +36,5 @@ jobs:
         SHEET_NAME: ${{ secrets.SHEET_NAME }}
         PRIVATE_KEY_PATH: AuthKey.p8
         GOOGLE_CREDS_PATH: credentials.json
+        GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS }}
       run: python fetch_appstore_downloads.py

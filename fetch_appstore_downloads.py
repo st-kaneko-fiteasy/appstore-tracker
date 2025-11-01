@@ -145,13 +145,27 @@ class AppStoreDownloadTracker:
     
     def connect_to_sheets(self):
         """Google Sheetsに接続"""
+        import json
+        
         scope = [
             'https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive'
         ]
         
-        creds = Credentials.from_service_account_file(
-            self.google_creds_path, scopes=scope)
+        # 環境変数から直接JSONを読み込む
+        creds_json = os.environ.get('GOOGLE_CREDENTIALS_JSON')
+        
+        if creds_json:
+            # 環境変数から認証情報を取得（GitHub Actions用）
+            print("環境変数からGoogle認証情報を読み込み中...")
+            creds_dict = json.loads(creds_json)
+            creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+        else:
+            # ファイルから認証情報を取得（ローカル実行用）
+            print(f"ファイルからGoogle認証情報を読み込み中: {self.google_creds_path}")
+            creds = Credentials.from_service_account_file(
+                self.google_creds_path, scopes=scope)
+        
         client = gspread.authorize(creds)
         
         return client.open(self.sheet_name)
