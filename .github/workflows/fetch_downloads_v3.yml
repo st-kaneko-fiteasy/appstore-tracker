@@ -1,0 +1,42 @@
+name: Fetch App Store Downloads V3
+
+on:
+  schedule:
+    - cron: '0 21 * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch-downloads:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install pyjwt cryptography requests pandas gspread google-auth
+    
+    - name: Create App Store credentials
+      run: |
+        echo "${{ secrets.APPSTORE_PRIVATE_KEY }}" > AuthKey.p8
+    
+    - name: Run fetch script
+      env:
+        KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+        ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+        VENDOR_NUMBER: ${{ secrets.VENDOR_NUMBER }}
+        SHEET_NAME: ${{ secrets.SHEET_NAME }}
+        PRIVATE_KEY_PATH: AuthKey.p8
+        GOOGLE_CREDS_PATH: credentials.json
+        GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS }}
+      run: |
+        echo "=== スクリプト実行開始 ==="
+        python fetch_appstore_downloads.py
+        echo "=== スクリプト実行完了 ==="
