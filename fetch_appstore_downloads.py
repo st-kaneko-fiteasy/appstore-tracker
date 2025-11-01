@@ -140,6 +140,18 @@ class AppStoreDownloadTracker:
         print(f"データフレームのカラム: {result.columns.tolist()}")
         print(f"最初の行サンプル:")
         print(result.iloc[0].tolist())
+
+        # 重複行を集約（Units と Proceeds を合計）
+        print(f"集約前の行数: {len(result)}")
+        result = result.groupby([
+            'Date', 'Year', 'Month', 'Week', 'Weekday',
+            'App Name', 'SKU', 'Country', 'Region', 'Device',
+            'Install Type', 'Customer Price', 'Currency', 'Product Type', 'Promo Code'
+        ], as_index=False).agg({
+            'Units': 'sum',
+            'Proceeds': 'sum'
+        })
+        print(f"集約後の行数: {len(result)}")
         
         return result
     
