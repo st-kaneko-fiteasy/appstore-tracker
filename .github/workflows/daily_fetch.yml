@@ -26,7 +26,7 @@ jobs:
     - name: Create credentials files
       run: |
         echo "${{ secrets.APPSTORE_PRIVATE_KEY }}" > AuthKey.p8
-        echo "${{ secrets.GOOGLE_CREDENTIALS }}" > credentials.json
+        echo "${{ secrets.GOOGLE_CREDENTIALS_BASE64 }}" | base64 -d > credentials.json
     
     - name: Fetch downloads and update Google Sheets
       env:
